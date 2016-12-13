@@ -377,3 +377,51 @@ public:
      */
     virtual void applyOn(const RamStatement& stmt, RamEnvironment& env) const;
 };
+
+
+
+/**
+ * A RAM executor based on the creation and compilation of an executable conducting
+ * the actual computation.
+ */
+class RamIRCompiler : public RamExecutor {
+
+    /**
+     * The file name of the executable to be created, empty if a temporary
+     * file should be utilized.
+     */
+    mutable std::string fileName;
+
+public:
+
+    /** A simple constructore */
+    RamIRCompiler(const std::string& fn = "") : fileName(fn) {}
+
+    /**
+     * Updates the file name of the binary to be utilized by
+     * this executor.
+     */
+    void setBinaryFile(const std::string& name) {
+        fileName = name;
+    }
+
+    /**
+     * Obtains the name of the binary utilized by this executer.
+     */
+    const std::string& getBinaryFile() const {
+        return fileName;
+    }
+
+    /**
+     * Compiles the given statement to a binary file. The target file
+     * name is either set by the corresponding member field or will
+     * be determined randomly. The chosen file-name will be returned.
+     */
+    std::string compileToIR(const SymbolTable& symTable, const RamStatement& stmt) const;
+
+    /**
+     * The actual implementation of this executor encoding the given
+     * program into a source file, compiling and executing it.
+     */
+    virtual void applyOn(const RamStatement& stmt, RamEnvironment& env) const;
+};
